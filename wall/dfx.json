@@ -1,0 +1,29 @@
+{
+  "canisters": {
+    "wall_backend": {
+      "main": "src/wall_backend/main.mo",
+      "type": "motoko"
+    },
+    "wall_frontend": {
+      "dependencies": [
+        "wall_backend"
+      ],
+      "frontend": {
+        "entrypoint": "src/wall_frontend/src/index.html"
+      },
+      "source": [
+        "src/wall_frontend/assets",
+        "dist/wall_frontend/"
+      ],
+      "type": "assets"
+    }
+  },
+  "defaults": {
+    "build": {
+      "args": "",
+      "packtool": ""
+    }
+  },
+  "output_env_file": ".env",
+  "version": 1
+}
