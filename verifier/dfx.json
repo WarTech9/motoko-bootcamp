@@ -1,0 +1,25 @@
+{
+  "canisters": {
+    "verifier": {
+      "main": "src/verifier/main.mo",
+      "type": "motoko"
+    },
+    "verifier_frontend": {
+      "dependencies": [
+        "verifier"
+      ],
+      "source": [
+        "src/verifier_frontend/assets"
+      ],
+      "type": "assets"
+    }
+  },
+  "defaults": {
+    "build": {
+      "args": "",
+      "packtool": ""
+    }
+  },
+  "output_env_file": ".env",
+  "version": 1
+}
