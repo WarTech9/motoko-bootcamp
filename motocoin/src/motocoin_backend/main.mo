@@ -5,13 +5,17 @@ import TrieMap "mo:base/TrieMap";
 import Option "mo:base/Option";
 import A "account";
 
-shared (msg) actor class MotoCoin(coinName: Text, coinSymbol: Text) {
+shared (msg) actor class MotoCoin(coinName: Text, coinSymbol: Text) = this {
 
   private let owner = msg.caller;
-  private let ledger = TrieMap.TrieMap<A.Account, Nat>(A.accountsEqual, A.accountsHash);
-  private var supply = 0;
   private let _n = coinName;
   private let _s = coinSymbol;
+  private let ledger = TrieMap.TrieMap<A.Account, Nat>(A.accountsEqual, A.accountsHash);
+  private var supply = 0;
+
+  let studentListCanister: actor {
+    getAllStudentsPrincipal : shared () ->async [Principal];
+  } = actor("rww3b-zqaaa-aaaam-abioa-cai");
 
   public func name(): async Text {
     coinName;
@@ -49,6 +53,10 @@ shared (msg) actor class MotoCoin(coinName: Text, coinSymbol: Text) {
   };
 
   public func airdrop(): async Result.Result<(), Text> {
+    let receivers: [Principal] = await studentListCanister.getAllStudentsPrincipal();
+    for(receiver in receivers.vals()) {
+        _mint({owner = receiver; subaccount = null}, 0);
+    };
     #ok();
   };
 
@@ -57,12 +65,12 @@ shared (msg) actor class MotoCoin(coinName: Text, coinSymbol: Text) {
       return #err(#NotAuthorized("Caller not owner"));
     };
     _mint(to, amount);
+    #ok();
   };
 
-  private func _mint(to: A.Account, amount: Nat): Result.Result<(), A.AccountError> {
+  private func _mint(to: A.Account, amount: Nat): () {
     supply += amount;
     let accountBalance = _balance(to);
     ledger.put(to, accountBalance + amount);
-    #ok();
-  }
+  };
 };
